@@ -111,8 +111,11 @@ formFuentes.addEventListener('submit', (evento) => {
   renderizarResultados();
 });
 
+// REVISAR
 inputBusqueda.addEventListener('input', () => {
-  renderizarResultados(); // filtra mientras escribes, no solo al enviar
+  consultaNoticias = inputBusqueda.value;
+  renderizarResultados();
+  renderizarNoticias();
 });
 
 /* ----------------------------------------------------------
@@ -324,13 +327,39 @@ function dibujarNoticia(noticia) {
 }
 //Hasta aqui
 // PARTE C A REVISAR!!!!
+/* Minúsculas y sin tildes: "Política" y "politica" deben coincidir. */
+function normalizar(texto) {
+  return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+/* Todo el texto donde una noticia puede ser encontrada. */
+function textoBuscable(noticia) {
+  return normalizar([
+    noticia.titular,
+    noticia.resumen,
+    TEMAS[noticia.categoria] || '',
+    ...(noticia.palabrasClave || []),
+  ].join(' '));
+}
+
+/* Todas las palabras de la consulta deben aparecer. */
+function coincideConConsulta(noticia, consulta) {
+  const palabras = normalizar(consulta).split(/\s+/).filter(Boolean);
+  const texto = textoBuscable(noticia);
+  return palabras.every((palabra) => texto.includes(palabra));
+}
+
+let consultaNoticias = '';
 
 function renderizarNoticias() {
   const visibles = NOTICIAS
-    .filter((noticia) => ambitoActivo === 'todos' || noticia.ambito === ambitoActivo)
-    .sort((a, b) => b.marcaTiempo - a.marcaTiempo); // la más reciente primero
+    .filter((n) => ambitoActivo === 'todos' || n.ambito === ambitoActivo)
+    .filter((n) => coincideConConsulta(n, consultaNoticias))
+    .sort((a, b) => b.marcaTiempo - a.marcaTiempo);
 
-  listaNoticias.innerHTML = visibles.map(dibujarNoticia).join('');
+  listaNoticias.innerHTML = visibles.length
+    ? visibles.map(dibujarNoticia).join('')
+    : '<p class="estado-vacio">No encontramos noticias para esa búsqueda.</p>';
 }
 
 function seleccionarTab(tabElegido) {
