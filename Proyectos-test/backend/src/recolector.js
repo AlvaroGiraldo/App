@@ -56,7 +56,10 @@ function normalizarItem(item, feed, ahora) {
     cobertura: [feed.fuenteId],
     ambito: feed.ambito,
     categoria: null,
-    palabrasClave: (item.categories || []).map((c) => String(c).trim()).filter(Boolean),
+    palabrasClave: (item.categories || [])
+    .map((c) => (typeof c === 'string' ? c : c?._ ?? ''))
+    .map((c) => String(c).trim())
+    .filter(Boolean),
     publicadaEn: publicada.toISOString(),
     recolectadaEn: ahora.toISOString(),
     analisis: null,

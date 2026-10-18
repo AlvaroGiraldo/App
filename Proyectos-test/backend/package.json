@@ -1,0 +1,13 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Backend de Contraste: recolector de noticias y API de búsqueda",
+  "type": "module",
+  "scripts": {
+    "recolector": "node --env-file-if-exists=.env src/recolector.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
