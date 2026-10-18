@@ -111,8 +111,11 @@ formFuentes.addEventListener('submit', (evento) => {
   renderizarResultados();
 });
 
+// REVISAR
 inputBusqueda.addEventListener('input', () => {
-  renderizarResultados(); // filtra mientras escribes, no solo al enviar
+  consultaNoticias = inputBusqueda.value;
+  renderizarResultados();
+  renderizarNoticias();
 });
 
 /* ----------------------------------------------------------
@@ -324,13 +327,68 @@ function dibujarNoticia(noticia) {
 }
 //Hasta aqui
 // PARTE C A REVISAR!!!!
+/* Minúsculas y sin tildes: "Política" y "politica" deben coincidir. */
+function normalizar(texto) {
+  return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+/* Todo el texto donde una noticia puede ser encontrada. */
+function textoBuscable(noticia) {
+  return normalizar([
+    noticia.titular,
+    noticia.resumen,
+    TEMAS[noticia.categoria] || '',
+    ...(noticia.palabrasClave || []),
+  ].join(' '));
+}
+
+/* Todas las palabras de la consulta deben aparecer. */
+function coincideConConsulta(noticia, consulta) {
+  const palabras = normalizar(consulta).split(/\s+/).filter(Boolean);
+  const texto = textoBuscable(noticia);
+  return palabras.every((palabra) => texto.includes(palabra));
+}
+
+let consultaNoticias = '';
 
 function renderizarNoticias() {
   const visibles = NOTICIAS
-    .filter((noticia) => ambitoActivo === 'todos' || noticia.ambito === ambitoActivo)
-    .sort((a, b) => b.marcaTiempo - a.marcaTiempo); // la más reciente primero
+    .filter((n) => ambitoActivo === 'todos' || n.ambito === ambitoActivo)
+    .filter((n) => coincideConConsulta(n, consultaNoticias))
+    .sort((a, b) => b.marcaTiempo - a.marcaTiempo);
 
-  listaNoticias.innerHTML = visibles.map(dibujarNoticia).join('');
+  listaNoticias.innerHTML = visibles.length
+    ? visibles.map(dibujarNoticia).join('')
+    : '<p class="estado-vacio">No encontramos noticias para esa búsqueda.</p>';
+}
+
+/* Fuentes que cubrieron las noticias encontradas, con cuántas cubrió cada una. */
+function fuentesDerivadas(noticias) {
+  const conteo = new Map();
+  noticias.forEach((n) =>
+    n.cobertura.forEach((id) => conteo.set(id, (conteo.get(id) || 0) + 1))
+  );
+  return FUENTES
+    .filter((f) => conteo.has(f.id))
+    .map((f) => ({ ...f, cantidad: conteo.get(f.id) }))
+    .sort((a, b) => b.cantidad - a.cantidad);
+}
+
+function renderizarFuentesRelacionadas(noticiasVisibles) {
+  const contenedor = document.getElementById('fuentes-relacionadas');
+  if (!consultaNoticias.trim()) { contenedor.hidden = true; return; }
+
+  const fuentes = fuentesDerivadas(noticiasVisibles)
+    .filter((f) => chipActivo === 'todas' || f.categoria === chipActivo);
+
+  contenedor.hidden = false;
+  contenedor.innerHTML = `<h3>Fuentes relacionadas</h3>` + (fuentes.length
+    ? fuentes.map((f) => `
+        <article class="tarjeta-fuente tarjeta-fuente--compacta">
+          <strong>${escapar(f.nombre)}</strong>
+          <span>${escapar(etiquetaCategoria(f.categoria))} · ${f.cantidad} ${f.cantidad === 1 ? 'noticia' : 'noticias'}</span>
+        </article>`).join('')
+    : '<p class="estado-vacio">Ninguna fuente de este tipo cubrió estas noticias.</p>');
 }
 
 function seleccionarTab(tabElegido) {
