@@ -665,3 +665,13 @@ body:has(.modal[open]) {
   font-size: 0.9rem;
   font-weight: 600;
 }
+
+/*REVISAR */
+
+.disposicion { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+@media (min-width: 900px) {
+  .disposicion:has(#fuentes-relacionadas:not([hidden])) {
+    grid-template-columns: minmax(0, 1fr) 280px;
+  }
+}
+#fuentes-relacionadas { align-self: start; }
