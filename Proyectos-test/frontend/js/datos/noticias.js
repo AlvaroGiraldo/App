@@ -40,6 +40,7 @@ export const NOTICIAS = [
     marcaTiempo: horasAtras(3),
     esEjemplo: true,
     cobertura: ['banrep', 'dane', 'eltiempo', 'elespectador', 'cambio'],
+    palabrasClave: ['banco', 'economia', 'tasas', 'interes'],
     detalle: {
       queOcurrio: 'Ejemplo: la junta directiva anuncia un ajuste en la tasa de interés de referencia. Aquí irá el resumen de los hechos confirmados, con fecha y cifras.',
       sectores: SECTORES_EJEMPLO,
@@ -65,6 +66,7 @@ export const NOTICIAS = [
     marcaTiempo: horasAtras(6),
     esEjemplo: true,
     cobertura: ['registraduria', 'colombiacheck', 'eltiempo', 'elespectador', 'cambio'],
+    palabrasClave: ['elecciones', 'registraduria', 'calendario', 'oficial'],
     detalle: {
       queOcurrio: 'Ejemplo: en redes circulan dos fechas distintas para las elecciones. La Registraduría publicó el calendario oficial, que coincide con una de ellas.',
       sectores: SECTORES_EJEMPLO,
@@ -90,6 +92,7 @@ export const NOTICIAS = [
     marcaTiempo: horasAtras(8),
     esEjemplo: true,
     cobertura: ['afpfactual', 'eltiempo', 'elespectador', 'cambio'],
+    palabrasClave: ['clima', 'cambio climático', 'calentamiento', 'temperatura'],
     detalle: {
       queOcurrio: 'Ejemplo: un organismo internacional presenta un informe con cifras de temperatura de los últimos cinco años y proyecciones a futuro.',
       sectores: SECTORES_EJEMPLO,
@@ -118,6 +121,7 @@ export const NOTICIAS = [
     marcaTiempo: horasAtras(5),
     esEjemplo: true,
     cobertura: ['minsalud', 'colombiacheck', 'afpfactual', 'eltiempo'],
+    palabrasClave: ['vacunas', 'salud', 'virus', 'OMS'],
     detalle: {
       queOcurrio: 'Ejemplo: un mensaje reenviado por WhatsApp afirma efectos de una vacuna. Aquí irá lo que dicen las autoridades sanitarias y los verificadores.',
       sectores: SECTORES_EJEMPLO,
@@ -146,6 +150,7 @@ export const NOTICIAS = [
     marcaTiempo: horasAtras(2),
     esEjemplo: true,
     cobertura: ['dane', 'eltiempo', 'cambio'],
+    palabrasClave: ['dane', 'empleo', 'desempleo', 'estadisticas'],
     detalle: {
       queOcurrio: 'Ejemplo: el DANE publica las cifras de empleo del último trimestre. Aquí irá el resumen con las cifras y el periodo exacto.',
       sectores: SECTORES_EJEMPLO,
@@ -171,6 +176,7 @@ export const NOTICIAS = [
     marcaTiempo: horasAtras(10),
     esEjemplo: true,
     cobertura: ['eltiempo', 'elespectador', 'cambio'],
+    palabrasClave: ['energia', 'renovables', 'ambiente', 'internacional'],
     detalle: {
       queOcurrio: 'Ejemplo: representantes de varios países discuten metas conjuntas de transición energética para la próxima década.',
       sectores: SECTORES_EJEMPLO,
@@ -196,6 +202,7 @@ export const NOTICIAS = [
     marcaTiempo: horasAtras(4),
     esEjemplo: true,
     cobertura: ['dane', 'colombiacheck'],
+    palabrasClave: ['pobraza', 'DANE', 'economia', 'estadisticas'],
     detalle: {
       queOcurrio: 'Ejemplo: circula una cifra de pobreza sin fuente. Se compara con el último dato publicado por el DANE.',
       sectores: SECTORES_EJEMPLO,
@@ -221,6 +228,7 @@ export const NOTICIAS = [
     marcaTiempo: horasAtras(7),
     esEjemplo: true,
     cobertura: ['procuraduria', 'eltiempo', 'elespectador', 'cambio'],
+    palabrasClave: ['frontera', 'seguridad', 'criminalidad', 'combate'],
     detalle: {
       queOcurrio: 'Ejemplo: autoridades locales y nacionales entregan versiones con algunos detalles distintos sobre un operativo.',
       sectores: SECTORES_EJEMPLO,
