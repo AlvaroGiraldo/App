@@ -5,7 +5,8 @@
   "description": "Backend de Contraste: recolector de noticias y API de búsqueda",
   "type": "module",
   "scripts": {
-    "recolector": "node --env-file-if-exists=.env src/recolector.js"
+  "recolectar": "node --env-file-if-exists=.env src/recolector.js",
+  "servidor": "node --env-file-if-exists=.env src/servidor.js"
   },
   "keywords": [],
   "author": "",
