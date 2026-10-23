@@ -3,6 +3,8 @@ import express from 'express';
 import { timingSafeEqual } from 'node:crypto';
 import { recolectar } from './recolector.js';
 import { leerNoticias } from './almacen.js';
+import { coincideConConsulta } from './busqueda.js';
+import { crearCors } from './cors.js';
 
 const PUERTO = Number(process.env.PUERTO) || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
@@ -10,6 +12,7 @@ const INTERVALO_MIN = Number(process.env.INTERVALO_MIN ?? 30);
 const CLAVE = process.env.CLAVE_RECOLECTAR || '';
 const LIMITE_POR_DEFECTO = 50;
 const LIMITE_MAXIMO = 100;
+const LARGO_MAXIMO_Q = 100;
 
 /* ----------------------------------------------------------
    Estado en memoria: qué está pasando y cómo salió la última vez.
@@ -61,8 +64,11 @@ app.get('/api/estado', (req, res) => {
   res.json(estado);
 });
 
+// CORS solo en la lectura pública; POST /api/recolectar no lo usa.
+app.use('/api/noticias', crearCors());
+
 app.get('/api/noticias', async (req, res) => {
-  const { ambito, limite } = req.query;
+  const { ambito, limite, q } = req.query;
 
   let max = LIMITE_POR_DEFECTO;
   if (limite !== undefined) {
@@ -74,12 +80,23 @@ app.get('/api/noticias', async (req, res) => {
   if (ambito !== undefined && typeof ambito !== 'string') {
     return res.status(400).json({ error: 'ambito debe ser un solo valor.' });
   }
+  if (q !== undefined) {
+    if (typeof q !== 'string') {
+      return res.status(400).json({ error: 'q debe ser un solo valor.' });
+    }
+    if (q.length > LARGO_MAXIMO_Q) {
+      return res.status(400).json({ error: `q admite máximo ${LARGO_MAXIMO_Q} caracteres.` });
+    }
+  }
 
   try {
     const todas = await leerNoticias();
-    const filtradas = ambito
+    let filtradas = ambito
       ? todas.filter((n) => n.ambito.toLowerCase() === ambito.toLowerCase())
       : todas;
+    if (q) {
+      filtradas = filtradas.filter((n) => coincideConConsulta(n, q));
+    }
     res.json({ total: filtradas.length, noticias: filtradas.slice(0, max) });
   } catch (error) {
     console.error('[api/noticias] no se pudo leer noticias.json:', error);
